@@ -146,10 +146,13 @@ static const CGFloat MarginRight = MarginLeft;
     }
     
     if (!self.isResizing) {
-        [self layoutCropRectViewWithCropRect:self.scrollView.frame];
+        CGRect sframe = self.scrollView.frame;
+        float w =  MIN(sframe.size.width, sframe.size.height);
+        sframe.size = CGSizeMake(w, w);
+        [self layoutCropRectViewWithCropRect:sframe];
         
-        if (self.interfaceOrientation != interfaceOrientation) {
-            [self zoomToCropRect:self.scrollView.frame];
+        if (self.interfaceOrientation != interfaceOrientation){
+            [self zoomToCropRect:sframe];
         }
     }
     
@@ -184,6 +187,8 @@ static const CGFloat MarginRight = MarginLeft;
 
 - (void)setupImageView
 {
+    CGFloat width = MIN(self.image.size.width, self.image.size.height);
+    CGSize aspectSize = CGSizeMake(width, width);
     CGRect cropRect = AVMakeRectWithAspectRatioInsideRect(self.image.size, self.insetRect);
     
     self.scrollView.frame = cropRect;
@@ -198,6 +203,17 @@ static const CGFloat MarginRight = MarginLeft;
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.imageView.image = self.image;
     [self.zoomingView addSubview:self.imageView];
+    
+    CGRect tipRect = cropRect;
+    tipRect.origin.y = 40;
+    tipRect.origin.x = 10;
+    tipRect.size = CGSizeMake(300, 30);
+    UILabel *lable = [[UILabel alloc] initWithFrame:tipRect];
+    lable.backgroundColor = [UIColor clearColor];
+    lable.textColor = [UIColor whiteColor];
+    lable.text = @"可移动、缩放和旋转";
+    lable.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:lable];
 }
 
 #pragma mark -
@@ -493,11 +509,11 @@ static const CGFloat MarginRight = MarginLeft;
     gestureRecognizer.rotation = 0.0f;
     
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        self.cropRectView.showsGridMinor = YES;
+//        self.cropRectView.showsGridMinor = YES;
     } else if (gestureRecognizer.state == UIGestureRecognizerStateEnded ||
                gestureRecognizer.state == UIGestureRecognizerStateCancelled ||
                gestureRecognizer.state == UIGestureRecognizerStateFailed) {
-        self.cropRectView.showsGridMinor = NO;
+//        self.cropRectView.showsGridMinor = NO;
     }
 }
 
