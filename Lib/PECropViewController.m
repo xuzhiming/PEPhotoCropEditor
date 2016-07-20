@@ -8,6 +8,7 @@
 
 #import "PECropViewController.h"
 #import "PECropView.h"
+#import "PEBundleUtils.h"
 
 @interface PECropViewController () <UIActionSheetDelegate>
 
@@ -18,21 +19,9 @@
 
 @implementation PECropViewController
 
-+ (NSBundle *)bundle
-{
-    static NSBundle *bundle = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSURL *bundleURL = [[NSBundle mainBundle] URLForResource:@"PEPhotoCropEditor" withExtension:@"bundle"];
-        bundle = [[NSBundle alloc] initWithURL:bundleURL];
-    });
-    
-    return bundle;
-}
-
 static inline NSString *PELocalizedString(NSString *key, NSString *comment)
 {
-    return [[PECropViewController bundle] localizedStringForKey:key value:nil table:@"Localizable"];
+    return [[PEBundleUtils bundle] localizedStringForKey:key value:nil table:@"Localizable"];
 }
 
 #pragma mark -
